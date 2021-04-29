@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Data Visualization with R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jeremy Mack" />
+    <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.2.6/panelset.js"></script>
+    <link href="libs/tile-view-0.2.6/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view-0.2.6/tile-view.js"></script>
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+    <link rel="stylesheet" href="default-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle, inverse, title-slide
+&lt;style&gt;
+  pre {
+    background-color: lightyellow;
+    white-space: pre-wrap;
+    line-height: 100%;
+  }
+&lt;/style&gt;
+
+
+
+
+
+<style>.panelset{--panel-tab-active-foreground: #0051BA;--panel-tab-hover-foreground: #d22;--panel-tab-font-family: Roboto;}</style>
+
+## Shiny Apps with R
+#### Jeremy Mack
+#### Lehigh University - Digital Scholarship Team
+&lt;img src="images/rstudio_hex.png" alt="RStudio hex sticker image" height=150/&gt; &amp;nbsp;
+&lt;img src="images/tidyverse_hex.png" alt="Tidyverse hex sticker image" height=150/&gt; &amp;nbsp;
+&lt;img src="images/shiny_hex.png" alt="Shiny hex sticker image" height=150/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;
+---
+### About this presentation
+
+ * This seminar is the third in a series on R programming, with
+   a focus on creating [Shiny Apps](https://shiny.rstudio.com/) in R.
+ 
+ * It is targeted at people that have experience programming in R.
+ 
+ * Focuses on a modern style of programming in R that uses a series of packages known as the [Tidyverse](https://www.tidyverse.org/).
+   
+ * Slides are available on [Lehigh's Research Computing site](https://confluence.cc.lehigh.edu/display/hpc/Seminars), [Wordpress](https://wordpress.lehigh.edu/jsm4/r-at-lehigh/data-visualization-with-r/), and Github ([slides](https://jeremymack-lu.github.io/rviz/) and [raw code](https://github.com/jeremymack-LU/rviz))
+
+---
+### Structure of the presentation
+
+The presentation is split into five topics:
+
+ * [**Topic 1:**](https://jeremymack-lu.github.io/rviz/#1) Shiny Apps - an overview
+ 
+ * [**Topic 2:**](https://jeremymack-lu.github.io/rviz/#1) User Interface (ui)
+ 
+ * [**Topic 3:**](https://jeremymack-lu.github.io/rviz/#1) Reactive Programming (server)
+ 
+ * [**Topic 4:**](https://jeremymack-lu.github.io/rviz/#1) Layouts and Themes
+ 
+ * [**Topic 5:**](https://jeremymack-lu.github.io/rviz/#1) Example
+ 
+ * [**Topic 6:**](https://jeremymack-lu.github.io/rviz/#1) Resources
+
+---
+class: center, middle, inverse
+
+#### Topic 1: Shiny Apps - an overview
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+
+---
+#### Topic 1: Shiny Apps - an overview
+.right-column2[
+&lt;center&gt;&lt;img src="./images/shiny_hex.png" height=250 alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.left-column2[
+* [RStudio](&lt;https://shiny.rstudio.com/&gt;) product - **shiny**
+
+* Web application framework for R
+
+* Used to create interactive applications, such as dashboards
+
+ * Reactive Programming
+]
+
+---
+#### Topic 1: Shiny Apps - an overview
+
+[&lt;center&gt;&lt;img src="./images/covid_shiny.png" alt="ggplot"&lt;/&gt;&lt;/center&gt;](https://shiny.cc.lehigh.edu/jsm4/covid19)
+
+---
+#### Topic 1: Shiny Apps - an overview
+.right-column2[
+&lt;center&gt;&lt;img src="./images/shiny_hex.png" height=250 alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.left-column2[
+* [RStudio](&lt;https://shiny.rstudio.com/&gt;) product - **shiny**
+
+* Web application framework for R
+
+* Three basic components:
+
+ 1. a user interface object (ui)
+{{content}}
+]
+
+--
+
+ 2. a server function (server)
+{{content}}
+
+--
+
+ 3. a call to the **shinyApp** function
+{{content}}
+
+---
+#### Topic 1: Shiny Apps - an overview
+.right-column2[
+&lt;center&gt;&lt;img src="./images/shiny_start.png" width=100% alt="RStudio screenshot" &lt;/center&gt;
+]
+
+.left-column2[
+* [RStudio](&lt;https://shiny.rstudio.com/&gt;) product - **shiny**
+
+* Web application framework for R
+
+* Ways to start creating a Shiny App:
+
+ 1. In RStudio, click the new file button and select **Shiny Web App...**
+
+]
+
+---
+#### Topic 1: Shiny Apps - an overview
+.right-column2[
+&lt;center&gt;&lt;img src="./images/shiny_start4a.png" width=100% alt="RStudio screenshot" &lt;/center&gt;
+&lt;center&gt;&lt;img src="./images/shiny_start4b.png" width=100% alt="RStudio screenshot" &lt;/center&gt;
+]
+
+.left-column2[
+* [RStudio](&lt;https://shiny.rstudio.com/&gt;) product - **shiny**
+
+* Web application framework for R
+
+* Ways to start creating a Shiny App:
+
+ 1. In RStudio, click the new file button and select **Shiny Web App...**
+
+ 2. In RStudio, click **File** | **New Project**, then select **New Directory** and **Shiny Web Application**
+
+]
+
+---
+#### Topic 1: Shiny Apps - an overview
+.right-column2[
+&lt;center&gt;&lt;img src="./images/shiny_start5.png" width=100% alt="RStudio screenshot" &lt;/center&gt;
+]
+
+.left-column2[
+* [RStudio](&lt;https://shiny.rstudio.com/&gt;) product - **shiny**
+
+* Web application framework for R
+
+* Ways to start creating a Shiny App:
+
+ 1. In RStudio, click the new file button and select **Shiny Web App...**
+ 
+ 2. In RStudio, click **File** | **New Project**, then select **New Directory** and **Shiny Web Application**
+
+ 3. Create a new directory and put a single file called app.R in it
+
+]
+
+---
+#### Topic 1: Shiny Apps - an overview
+.right-column2[
+&lt;center&gt;&lt;img src="./images/shiny_start2.png" width=100% alt="RStudio screenshot" &lt;/center&gt;
+&lt;center&gt;&lt;img src="./images/shiny_start3.png" width=100% alt="RStudio screenshot" &lt;/center&gt;
+]
+
+.left-column2[
+* [RStudio](&lt;https://shiny.rstudio.com/&gt;) product - **shiny**
+
+* Web application framework for R
+
+* Ways to start creating a Shiny App:
+
+ 1. In RStudio, click the new file button and select **Shiny Web App...**
+ 
+ 2. In RStudio, click **File** | **New Project**, then select **New Directory** and **Shiny Web Application**
+ 
+ 3. Create a new directory and put a single file called app.R in it
+ 
+ * Shortcut: You can add the app boilerplate by typing **shinyapp** and pressing Shift+Tab
+
+]
+
+---
+class: center, middle, inverse
+
+#### Topic 2: User Interface (ui)
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+
+---
+#### Topic 2: User Interface (ui)
+.right-column2[
+&lt;center&gt;&lt;img src="./images/shiny_hex.png" height=250 alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.left-column2[
+* Application's front end appearance
+
+* Collection of inputs and outputs
+{{content}}
+]
+
+--
+
+* Input functions
+  - Adds input controls to the ui
+  
+  - First argument: **inputId**
+  
+  - Different types of controls:
+     * Free text
+     * Numeric 
+     * Dates 
+     * Limited choices
+     * File uploads
+     * Action buttons
+---
+#### Topic 2: User Interface (ui)
+.panelset[
+
+.panel[.panel-name[Text]
+
+.tiny[
+
+```r
+# Free text
+ui &lt;- fluidPage(
+  textInput("name", "What's your name?"),
+  passwordInput("password", "What's your password?"),
+  textAreaInput("story", "Tell me about yourself", rows = 3)
+)
+
+server &lt;- function(input, output, session) {}
+
+shinyApp(ui, server)
+```
+]]
+
+.panel[.panel-name[Numeric]
+
+.tiny[
+
+```r
+# Numeric inputs
+ui &lt;- fluidPage(
+  numericInput("num", "Number one", value = 0, min = 0, max = 100),
+  sliderInput("num2", "Number two", value = 50, min = 0, max = 100),
+  sliderInput("rng", "Range", value = c(10, 20), min = 0, max = 100)
+)
+
+server &lt;- function(input, output, session) {}
+
+shinyApp(ui, server)
+```
+]]
+
+.panel[.panel-name[Dates]
+
+.tiny[
+
+```r
+# Dates
+ui &lt;- fluidPage(
+  dateInput("dob", "When were you born?"),
+  dateRangeInput("range", "What is the range of your data?")
+)
+
+server &lt;- function(input, output, session) {}
+
+shinyApp(ui, server)
+```
+]]
+
+.panel[.panel-name[Choices]
+
+.tiny[
+
+```r
+# Limited choices
+# Drop downs (single or multiple choices)
+ui &lt;- fluidPage(
+  selectInput("state", "What's your favorite state?", state.name),
+  selectInput("state2", "What's your favourite state(s)?", state.name,
+              multiple = TRUE)
+)
+# Radio buttons (single choice)
+animals &lt;- c("dog", "cat", "mouse", "bird", "other", "I don't like animals")
+
+ui &lt;- fluidPage(
+  radioButtons("animal", "What's your favorite animal?", animals)
+)
+# Checkbox (multiple choices)
+ui &lt;- fluidPage(
+  radioButtons("animal", "What's your favorite animal?", animals),
+  checkboxGroupInput("animal", "What animals do you like?", animals)
+)
+```
+]]
+
+.panel[.panel-name[Uploads]
+
+.tiny[
+
+```r
+# File uploads
+ui &lt;- fluidPage(
+  fileInput("upload", NULL)
+)
+
+server &lt;- function(input, output, session) {}
+
+shinyApp(ui, server)
+```
+]]
+
+.panel[.panel-name[Action buttons]
+
+.tiny[
+
+```r
+# Action buttons
+ui &lt;- fluidPage(
+  actionButton("click", "Click me!"),
+  actionButton("download", "Download")
+)
+
+server &lt;- function(input, output, session) {}
+
+shinyApp(ui, server)
+```
+]]
+
+]
+
+---
+#### Topic 2: User Interface (ui)
+.right-column2[
+&lt;center&gt;&lt;img src="./images/shiny_hex.png" height=250 alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.left-column2[
+* Application's front end appearance
+
+* Collection of inputs and outputs
+
+* Output functions
+  - Creates placeholders later filled by the server function (render)
+  
+  - First argument: **outputId**
+  
+  - Three main types:
+     * Text
+     * Tables
+     * Plots
+]
+
+---
+#### Topic 2: User Interface (ui)
+.panelset[
+
+.panel[.panel-name[Text]
+
+.tiny[
+
+```r
+# Text output
+ui &lt;- fluidPage(
+  textInput("name", "What's your name?"),
+  textOutput("text"),
+)
+
+server &lt;- function(input, output, session) {
+  output$text &lt;- renderText({ 
+    input$name
+  })
+}
+
+shinyApp(ui, server)
+```
+]]
+
+.panel[.panel-name[Tables]
+
+.tiny[
+
+```r
+# Table outputs
+ui &lt;- fluidPage(
+  tableOutput("static"),
+  dataTableOutput("dynamic")
+)
+
+server &lt;- function(input, output, session) {
+  output$static &lt;- renderTable(head(mtcars))
+  output$dynamic &lt;- renderDataTable(mtcars, options = list(pageLength = 5))
+}
+
+shinyApp(ui, server)
+```
+]]
+
+.panel[.panel-name[Plots]
+
+.tiny[
+
+```r
+# Dates
+ui &lt;- fluidPage(
+  plotOutput("plot", width = "400px")
+)
+
+server &lt;- function(input, output, session) {
+  output$plot &lt;- renderPlot(with(mtcars, plot(mpg~hp), res = 96))
+}
+
+shinyApp(ui, server)
+```
+]]
+]
+
+---
+class: center, middle, inverse
+
+#### Topic 3: Reactive Programming (server)
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+
+---
+#### Topic 3: Reactive Programming (server)
+.right-column2[
+&lt;center&gt;&lt;img src="./images/shiny_hex.png" height=250 alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.left-column2[
+* Application's back end logic
+
+* **Server** function
+{{content}}
+]
+
+--
+
+* Creates (renders) outputs based on inputs from the browser
+
+---
+#### Topic 3: Reactive Programming (server)
+.right-column2[
+&lt;center&gt;&lt;img src="./images/reactive0.png" width=100% alt="Shiny hex sticker image" &lt;/center&gt;
+&lt;center&gt;&lt;img src="./images/reactive1.png" width=100% alt="Shiny hex sticker image" &lt;/center&gt;
+&lt;center&gt;&lt;img src="./images/reactive2.png" width=100% alt="Shiny hex sticker image" &lt;/center&gt;
+&lt;center&gt;&lt;img src="./images/reactive3.png" width=100% alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.tiny2.left-column2[
+* Application's back end logic
+
+* **Server** function
+
+* Creates (renders) outputs based on inputs from the browser
+
+
+```r
+ui &lt;- fluidPage(
+  textInput("name", "What's your name?"),
+  textOutput("text")
+)
+
+server &lt;- function(input, output, session) {
+  output$text &lt;- renderText(
+    paste("Hello, my name is ", input$name))
+}
+
+shinyApp(ui, server)
+```
+]
+
+---
+#### Topic 3: Reactive Programming (server)
+.right-column2[
+&lt;center&gt;&lt;img src="./images/error1.png" width=100% alt="error screenshot" &lt;/center&gt;
+&lt;center&gt;&lt;img src="./images/error2.png" width=100% alt="error screenshot" &lt;/center&gt;
+]
+
+.left-column2[
+* Application's back end logic
+
+* **Server** function
+
+* Creates (renders) outputs based on inputs from the browser
+
+* Some things to remember:
+ * **input** objects are read-only
+]
+
+---
+#### Topic 3: Reactive Programming (server)
+.right-column2[
+&lt;center&gt;&lt;img src="./images/error3.png" width=100% alt="error screenshot" &lt;/center&gt;
+&lt;center&gt;&lt;img src="./images/error4.png" width=100% alt="error screenshot" &lt;/center&gt;
+]
+
+.left-column2[
+* Application's back end logic
+
+* **Server** function
+
+* Creates (renders) outputs based on inputs from the browser
+
+* Some things to remember:
+ * **input** objects are read-only
+ 
+ * **input** and **output** objects are read in reactive context created by a function like renderText() or reactive()
+]
+
+---
+#### Topic 3: Reactive Programming (server)
+.right-column2[
+&lt;center&gt;&lt;img src="./images/error5.png" width=100% alt="error screenshot" &lt;/center&gt;
+&lt;center&gt;&lt;img src="./images/error6.png" width=100% alt="error screenshot" &lt;/center&gt;
+]
+
+.left-column2[
+* Application's back end logic
+
+* **Server** function
+
+* Creates (renders) outputs based on inputs from the browser
+
+* Some things to remember:
+ * **input** objects are read-only
+ 
+ * **input** and **output** objects are read in reactive context created by a function like renderText() or reactive()
+ 
+ * Check your spelling!
+]
+
+---
+#### Topic 3: Reactive Programming (server)
+.right-column2[
+&lt;center&gt;&lt;img src="./images/error7.png" width=100% alt="error screenshot" &lt;/center&gt;
+&lt;center&gt;&lt;img src="./images/error8.png" width=100% alt="error screenshot" &lt;/center&gt;
+]
+
+.left-column2[
+* Application's back end logic
+
+* **Server** function
+
+* Creates (renders) outputs based on inputs from the browser
+
+* Some things to remember:
+ * **input** objects are read-only
+ 
+ * **input** and **output** objects are read in reactive context created by a function like renderText() or reactive()
+ 
+ * Check your spelling!
+]
+
+---
+class: center, middle, inverse
+
+#### Topic 4: Layouts and Themes
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+
+---
+#### Topic 4: Layouts and Themes
+.right-column2[
+&lt;center&gt;&lt;img src="./images/shiny_hex.png" height=250 alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.left-column2[
+* Layouts add structure to an application
+
+* Created by a hierarchy of function calls
+]
+
+---
+#### Topic 4: Layouts and Themes
+.right-column2[
+&lt;center&gt;&lt;img src="./images/layout1.png" width=100% alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.tiny2.left-column2[
+* Layouts add structure to an application
+
+* Created by a hierarchy of function calls
+
+* sidebarLayout:
+
+
+```r
+ui &lt;- fluidPage(
+
+)
+```
+]
+
+---
+#### Topic 4: Layouts and Themes
+.right-column2[
+&lt;center&gt;&lt;img src="./images/layout1.png" width=100% alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.tiny2.left-column2[
+* Layouts add structure to an application
+
+* Created by a hierarchy of function calls
+
+* sidebarLayout:
+
+
+```r
+ui &lt;- fluidPage(
+  titlePanel(),
+  sidebarLayout(
+    sidebarPanel(),
+    mainPanel()
+  )
+)
+```
+]
+
+---
+#### Topic 4: Layouts and Themes
+.right-column2[
+&lt;center&gt;&lt;img src="./images/layout1.png" width=100% alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.tiny2.left-column2[
+* Layouts add structure to an application
+
+* Created by a hierarchy of function calls
+
+* sidebarLayout:
+
+
+```r
+ui &lt;- fluidPage(
+  titlePanel("My first Shiny App"),
+  sidebarLayout(
+    sidebarPanel(
+      width=2,
+      textInput("name", "What's your name?")),
+    mainPanel(textOutput("text"))
+  )
+)
+```
+]
+
+---
+#### Topic 4: Layouts and Themes
+.right-column2[
+&lt;center&gt;&lt;img src="./images/layout1.png" width=100% alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.tiny2.left-column2[
+* Layouts add structure to an application
+
+* Created by a hierarchy of function calls
+
+* sidebarLayout:
+
+
+```r
+ui &lt;- fluidPage(
+  titlePanel("My first Shiny App"),
+  sidebarLayout(
+    sidebarPanel(
+      width=2,
+      textInput("name", "What's your name?")),
+    mainPanel(textOutput("text"))
+  )
+)
+
+server &lt;- function(input, output, session) {
+  output$text &lt;- renderText({
+    if (input$name=="")
+      return(NULL)
+    else paste("Hello, my name is ", input$name) 
+    })
+}
+
+shinyApp(ui, server)
+```
+]
+
+---
+#### Topic 4: Layouts and Themes
+.right-column2[
+&lt;center&gt;&lt;img src="./images/layout2.png" width=100% alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.tiny2.left-column2[
+* Layouts add structure to an application
+
+* Created by a hierarchy of function calls
+
+* fluidRows with columns:
+
+
+```r
+ui &lt;- fluidPage(
+  fluidRow(
+    column(4, textInput("name", "What's your name?")),
+    column(8, textOutput("text"))),
+  fluidRow(
+    column(6, dataTableOutput("dynamic")),
+    column(6, plotOutput("plot"))))
+
+server &lt;- function(input, output, session) {
+  output$text &lt;- renderText({
+    if (input$name=="")
+      return(NULL)
+    else paste("Hello, my name is ", input$name) 
+    })
+  
+  output$dynamic &lt;- renderDataTable(mtcars)
+  
+  output$plot &lt;- renderPlot(
+    ggplot(mtcars, aes(hp,mpg)) + geom_point())}
+
+shinyApp(ui, server)
+```
+]
+
+---
+#### Topic 4: Layouts and Themes
+.right-column2[
+&lt;center&gt;&lt;img src="./images/layout3.png" width=100% alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.tiny2.left-column2[
+* Layouts add structure to an application
+
+* Created by a hierarchy of function calls
+
+* Tabsets:
+
+
+```r
+ui &lt;- fixedPage(
+  tabsetPanel(
+    tabPanel("Import data", 
+      fileInput("file", "File:", buttonLabel="Upload file"),
+      checkboxInput("header", "File has headers", TRUE)),
+    tabPanel("Table", dataTableOutput("table")),
+    tabPanel("Graph", plotOutput("plot"))))
+
+server &lt;- function(input, output, session) {
+  df &lt;- reactive({
+    file &lt;- input$file
+    read.csv(file$datapath, header=input$header)
+  })
+  
+  output$table &lt;- renderDataTable(df())
+  
+  output$plot &lt;- renderPlot(
+    ggplot(df(), aes(hp,mpg)) + geom_point())}
+
+shinyApp(ui, server)
+```
+]
+
+---
+#### Topic 4: Layouts and Themes
+.right-column2[
+&lt;center&gt;&lt;img src="./images/shiny_hex.png" height=250 alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.left-column2[
+* Themes change the overall appearance
+
+* Shiny uses a [Bootstrap]("https://getbootstrap.com/") framework
+
+* Customization can be made using **bslib**
+]
+
+---
+#### Topic 4: Layouts and Themes
+.right-column2[
+&lt;center&gt;&lt;img src="./images/layout4.png" width=100% alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.tiny2.left-column2[
+* Themes change the overall appearance
+
+* Shiny uses a [Bootstrap]("https://getbootstrap.com/") framework
+
+* Customization can be made using **bslib**
+
+
+```r
+ui &lt;- fixedPage(
+  theme=bslib::bs_theme(bootswatch = "darkly"),
+  tabsetPanel(
+    tabPanel("Import data", 
+      fileInput("file", "File:", buttonLabel="Upload file"),
+      checkboxInput("header", "File has headers", TRUE)),
+    tabPanel("Table", dataTableOutput("table")),
+    tabPanel("Graph", plotOutput("plot"))))
+
+server &lt;- function(input, output, session) {
+  df &lt;- reactive({
+    file &lt;- input$file
+    read.csv(file$datapath, header=input$header)
+  })
+  
+  output$table &lt;- renderDataTable(df())
+  
+  output$plot &lt;- renderPlot(
+    ggplot(df(), aes(hp,mpg)) + geom_point())}
+
+shinyApp(ui, server)
+```
+]
+
+---
+#### Topic 4: Layouts and Themes
+.right-column2[
+&lt;center&gt;&lt;img src="./images/layout5.png" width=100% alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.tiny2.left-column2[
+* Themes change the overall appearance
+
+* Shiny uses a [Bootstrap]("https://getbootstrap.com/") framework
+
+* plot themes can be matched with **thematic**
+
+
+```r
+server &lt;- function(input, output, session) {
+  thematic::thematic_shiny()
+  
+  df &lt;- reactive({
+    file &lt;- input$file
+    read.csv(file$datapath, header=input$header)
+  })
+  
+  output$table &lt;- renderDataTable(df())
+  
+  output$plot &lt;- renderPlot(
+    ggplot(df(), aes(hp,mpg)) + geom_point())}
+
+shinyApp(ui, server)
+```
+]
+
+---
+class: center, middle, inverse
+
+#### Topic 5: Example
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+
+---
+#### Topic 5: Example
+
+&lt;center&gt;&lt;img src="./images/example.png" alt="ggplot"&lt;/&gt;&lt;/center&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
