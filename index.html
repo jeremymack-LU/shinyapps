@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Data Visualization with R</title>
+    <title>Shiny Apps with R</title>
     <meta charset="utf-8" />
     <meta name="author" content="Jeremy Mack" />
     <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
@@ -897,6 +897,413 @@ class: center, middle, inverse
 #### Topic 5: Example
 
 &lt;center&gt;&lt;img src="./images/example.png" alt="ggplot"&lt;/&gt;&lt;/center&gt;
+
+---
+class: center, middle, inverse
+
+#### Topic 5: Example - data &amp; data cleanup
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+
+---
+#### Topic 5: Example - data &amp; data cleanup
+.tiny2.left-column8[
+
+```r
+# Load packages ----
+pacman::p_load(shiny, shinydashboard, tidyverse, lubridate, patchwork)
+
+# Load climate data ----
+## Read in climate data
+url &lt;- "https://raw.githubusercontent.com/jeremymack-LU/shinyapps/master/data/abe_climate.csv"
+df &lt;- read_csv(url, col_types=cols(tavg=col_double()))
+
+df[df$date==as.Date("1954-05-20"),6] &lt;- NA
+
+# Calculate daily mean temperature (dmt) and day of year (doy)
+df &lt;- df %&gt;% 
+  mutate(dmt=(tmax+tmin)/2,
+         doy=yday(date),
+         tmin=tmin* 1.8 + 32,
+         tmax=tmax* 1.8 + 32,
+         dmt=dmt* 1.8 + 32)
+```
+]
+
+---
+#### Topic 5: Example - data &amp; data cleanup
+.tiny2.left-column3[
+
+```r
+# Summarize temperature data ----
+# Calculate monthly means by year
+monthly.means &lt;- df %&gt;%
+  group_by(month(date), year(date)) %&gt;%
+  summarize(avg=mean(dmt, na.rm=TRUE))
+colnames(monthly.means)[1:2] &lt;- c("month","year")
+
+# Calculate the average daytime mean by month
+monthly.avg &lt;- monthly.means %&gt;%
+  group_by(month) %&gt;%
+  summarize(avg=mean(avg, na.rm=TRUE))
+
+# What was the highest monthly mean?
+monthly.max &lt;- monthly.means %&gt;%
+  group_by(month) %&gt;%
+  arrange(avg) %&gt;%
+  slice(n()) %&gt;%
+  rename(year.max=year,
+         avg.max=avg)
+
+# What was the lowest monthly mean?
+monthly.min &lt;- monthly.means %&gt;%
+  group_by(month) %&gt;%
+  arrange(desc(avg)) %&gt;%
+  slice(n()) %&gt;%
+  rename(year.min=year,
+         avg.min=avg)
+```
+]
+
+.tiny2.right-column3[
+
+```r
+# Merge data
+monthly.sum &lt;- monthly.avg %&gt;%
+  left_join(monthly.max, by="month") %&gt;%
+  left_join(monthly.min, by="month") %&gt;%
+  relocate(avg.max, .after=avg) %&gt;%
+  relocate(avg.min, .after=year.max) %&gt;%
+  mutate(month=as.integer(month),
+         year.max=as.integer(year.max),
+         year.min=as.integer(year.min)) %&gt;%
+  rename(Month=month,
+         Average=avg,
+         Max=avg.max,
+         'Max Year'=year.max,
+         Min=avg.min,
+         'Min Year'=year.min)
+```
+]
+
+---
+#### Topic 5: Example - data &amp; data cleanup
+.tiny2.left-column10[
+
+```r
+# Hottest day on record for that month
+monthly.max.rec &lt;- df %&gt;%
+  group_by(month(date)) %&gt;%
+  drop_na(tmax) %&gt;%
+  arrange(tmax) %&gt;%
+  slice(n()) %&gt;%
+  as_tibble() %&gt;%
+  select(date,tmax) %&gt;%
+  mutate(Month=month(date)) %&gt;%
+  relocate(date, .after=tmax) %&gt;%
+  rename('Record daily max.'=tmax,
+         'Date of record max.'=date)
+
+# Coolest day on record for that month
+monthly.min.rec &lt;- df %&gt;%
+  group_by(month(date)) %&gt;%
+  drop_na(tmin) %&gt;%
+  arrange(desc(tmin)) %&gt;%
+  slice(n()) %&gt;%
+  as_tibble() %&gt;%
+  select(date,tmin) %&gt;%
+  mutate(Month=month(date)) %&gt;%
+  relocate(date, .after=tmin)%&gt;%
+  rename('Record daily min.'=tmin,
+         'Date of record min.'=date)
+```
+]
+
+.tiny2.right-column10[
+
+```r
+# Merge data
+monthly.sum &lt;- monthly.sum %&gt;%
+  left_join(monthly.max.rec, by="Month") %&gt;%
+  left_join(monthly.min.rec, by="Month") %&gt;%
+  mutate(
+  `Date of record min.`=as.character(`Date of record min.`),
+  `Date of record max.`=as.character(`Date of record max.`))
+```
+]
+
+---
+#### Topic 5: Example - data &amp; data cleanup
+.tiny2.left-column3[
+
+```r
+# Summarize precipitation data ----
+# Calculate monthly sums by year
+prcp.sums &lt;- df %&gt;%
+  group_by(month(date), year(date)) %&gt;%
+  summarize(total_in=sum(prcp, na.rm=TRUE)/25.4)
+names(prcp.sums)[1:2] &lt;- c("month","year")
+
+# Calculate the average sum by month
+prcp.avg &lt;- prcp.sums %&gt;%
+  group_by(month) %&gt;%
+  summarize(avg=mean(total_in,na.rm=TRUE))
+
+# What was the highest monthly mean?
+prcp.max &lt;- prcp.sums %&gt;%
+  group_by(month) %&gt;%
+  arrange(total_in) %&gt;%
+  slice(n()) %&gt;%
+  rename(year.max=year,
+         sum.max=total_in)
+
+# What was the lowest monthly mean?
+prcp.min &lt;- prcp.sums %&gt;%
+  group_by(month) %&gt;%
+  arrange(desc(total_in)) %&gt;%
+  slice(n()) %&gt;%
+  rename(year.min=year,
+         sum.min=total_in)
+```
+]
+
+.tiny2.right-column3[
+
+```r
+# Merge data
+prcp.sum &lt;- prcp.avg %&gt;%
+  left_join(prcp.max, by="month") %&gt;%
+  left_join(prcp.min, by="month") %&gt;%
+  relocate(sum.max, .after=avg) %&gt;%
+  relocate(sum.min, .after=year.max) %&gt;%
+  mutate(month=as.integer(month),
+         year.max=as.integer(year.max),
+         year.min=as.integer(year.min)) %&gt;%
+  rename(Month=month,
+         Average=avg,
+         Max=sum.max,
+         'Max Year'=year.max,
+         Min=sum.min,
+         'Min Year'=year.min)
+```
+]
+
+---
+#### Topic 5: Example - data &amp; data cleanup
+.tiny2.left-column8[
+
+```r
+# Most rain on a single day in each month
+prcp.max.rec &lt;- df %&gt;%
+  group_by(month(date)) %&gt;%
+  drop_na(prcp) %&gt;%
+  arrange(prcp) %&gt;%
+  slice(n()) %&gt;%
+  as_tibble() %&gt;%
+  select(date,prcp) %&gt;%
+  mutate(Month=month(date),
+         prcp=prcp/25.4) %&gt;%
+  relocate(date, .after=prcp) %&gt;%
+  rename('Record daily precip.'=prcp,
+         'Date of record precip.'=date)
+
+# Merge data
+prcp.sum &lt;- prcp.sum %&gt;%
+  left_join(prcp.max.rec, by="Month") %&gt;%
+  mutate(`Date of record precip.`=as.character(`Date of record precip.`))
+```
+]
+
+---
+class: center, middle, inverse
+
+#### Topic 5: Example - ui
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+
+---
+#### Topic 5: Example - ui
+.tiny2.left-column8[
+
+```r
+# Create the Shiny App ----
+# User Interface (ui)
+ui &lt;- dashboardPage(
+  skin="black",
+  dashboardHeader(title="Lehigh Valley Climate"),
+  dashboardSidebar(
+    selectizeInput(inputId='data',
+                   label='Select climate variable:',
+                   choices=c(" ","Precipitation","Temperature"),
+                   options=list(
+                     placeholder='',
+                     onInitialize = I('function() { this.setValue(" "); }'))
+    )),
+  dashboardBody(
+    fluidRow(
+      column(9,plotOutput("plot", brush = "plot_brush")),
+      column(3,plotOutput("legend"))
+    ),
+    fluidRow(
+      column(12,align="center",tableOutput("Data"))
+    )
+  )
+)
+```
+]
+
+---
+class: center, middle, inverse
+
+#### Topic 5: Example - server
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+
+---
+#### Topic 5: Example - server
+.tiny2.left-column8[
+
+```r
+# Server function (server)
+server &lt;- function(input, output, session) {
+  labels &lt;- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+  output$plot &lt;- renderPlot({
+    plot &lt;- {
+      if (input$data==" ")
+        ggplot() + theme_void()
+      else if(input$data=="Temperature")
+        ggplot(monthly.sum, aes(x=Month)) +
+          geom_crossbar(aes(ymin=Min,ymax=Max,y=Average),width=0.5,size=0.25,fill="lightgray") +
+          geom_point(aes(y=`Record daily max.`),shape=21,fill="#d1ce08") +
+          geom_point(aes(y=`Record daily min.`),shape=21,fill="blue") +
+          scale_x_continuous(breaks=seq(1,12,1),labels=labels,expand=c(0.02,0)) +
+          labs(x="Month", y="Temperature (°F)") +
+          theme_dark()
+      else ggplot(prcp.sum, aes(x=Month)) +
+        geom_crossbar(aes(ymin=Min,ymax=Max,y=Average),width=0.75,size=0.25,fill="lightgray") +
+        geom_point(aes(y=`Record daily precip.`),shape=21,size=3,fill="blue") +
+        scale_x_continuous(breaks=seq(1,12,1),labels=labels,expand=c(0.02,0)) +
+        scale_y_continuous(expand=c(0.02,0)) +
+        labs(x="Month", y="Total precipitation (in)") +
+        theme_dark()
+    }
+    plot
+  }, res=96)
+```
+]
+
+---
+#### Topic 5: Example - server
+.tiny2.left-column8[
+
+```r
+output$legend &lt;- renderPlot({
+    leg &lt;- {
+      if (input$data==" ")
+        ggplot() + theme_void()
+      else if(input$data=="Temperature")
+        ggplot() +
+        annotate(geom="rect", xmin=1.5, xmax=3, ymin=0, ymax=4, 
+                 color="black", fill="lightgray", size=0.25) +
+        annotate(geom="text", label="Maximum daily\nmean temperature",
+                 x=3.1, hjust=0, y=4, vjust=1, size=3) +
+        annotate(geom="text", label="Minimum daily\nmean temperature",
+                 x=3.1, hjust=0, y=0, vjust=0, size=3) +
+        annotate(geom="text", label="Average daily\nmean temperature",
+                 x=3.1, hjust=0, y=2, vjust=0.5, size=3) +
+        annotate("segment", x=1.5, xend=3, y=2, yend=2) +
+        annotate("point", x=2,y=-0.5,shape=21,fill="blue") +
+        annotate(geom="text", label="Record daily minimum temperature",
+                 x=2.1, hjust=0, y=-0.5, vjust=0.5, size=3) +
+        annotate("point", x=2,y=4.5,shape=21,fill="#d1ce08") +
+        annotate(geom="text", label="Record daily maximum temperature",
+                 x=2.1, hjust=0, y=4.5, vjust=0.5, size=3) +
+        scale_x_continuous(limits=c(1.45,4.5)) +
+        theme_void() +
+        theme(text=element_text(color="#22211d"),
+              plot.background=element_rect(fill="white", color=NA),
+              panel.background=element_rect(fill="white", color=NA),
+              legend.background=element_rect(fill="white", color=NA))
+```
+]
+
+---
+#### Topic 5: Example - server
+.tiny2.left-column8[
+
+```r
+      else ggplot() +
+        annotate(geom="rect", xmin=1.5, xmax=3, ymin=0, ymax=4, 
+                 color="black", fill="lightgray", size=0.25) +
+        annotate(geom="text", label="Maximum monthly\nprecipitation",
+                 x=3.1, hjust=0, y=4, vjust=1, size=3) +
+        annotate(geom="text", label="Minimum monthly\nprecipitation",
+                 x=3.1, hjust=0, y=0, vjust=0, size=3) +
+        annotate(geom="text", label="Average monthly\nprecipitation",
+                 x=3.1, hjust=0, y=2, vjust=0.5, size=3) +
+        annotate("segment", x=1.5, xend=3, y=2, yend=2) +
+        annotate("point", x=2,y=4.5,shape=21,fill="blue") +
+        annotate(geom="text", label="Record daily precipitation",
+                 x=2.1, hjust=0, y=4.5, vjust=0.5, size=3) +
+        scale_x_continuous(limits=c(1.45,4.5)) +
+        theme_void() +
+        theme(text=element_text(color="#22211d"),
+              plot.background=element_rect(fill="white", color=NA),
+              panel.background=element_rect(fill="white", color=NA),
+              legend.background=element_rect(fill="white", color=NA))
+    }
+    leg
+  }, res=96)
+```
+]
+
+---
+#### Topic 5: Example - server
+.tiny2.left-column8[
+
+```r
+  output$Data &lt;- renderTable({
+    if(input$data==" ")
+      "To plot data, please select a climate variable"
+    else if(input$data=="Temperature")
+      brushedPoints(monthly.sum, input$plot_brush)
+    else 
+      brushedPoints(prcp.sum, input$plot_brush)
+  })
+}
+
+# Run the app
+shinyApp(ui, server)
+```
+]
+
+---
+class: inverse
+
+#### Review - Shiny App Resources:
+
+* Shiny Apps
+
+ * *Mastering Shiny* by Hadley Wickham - [link](https://mastering-shiny.org)
+ 
+ * RStudio tutortials - [link](https://shiny.rstudio.com/tutorial/)
+ 
+ * Shiny extensions - [link](https://github.com/nanxstats/awesome-shiny-extensions)
+ 
+---
+class: center, middle, inverse, title-slide
+
+## Questions?
+&lt;img src="./images/contact.png" alt="RStudio" height=400/&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

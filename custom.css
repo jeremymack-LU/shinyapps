@@ -139,8 +139,17 @@ th, td { padding: 5px; }
 }
 
 .left-column8 {
-  width: 90%;
+  width: 98%;
   float: left;
+}
+
+.left-column10 {
+  width: 39%;
+  float: left;
+}
+.right-column10 {
+  width: 55%;
+  float: right;
 }
 
 
