@@ -819,7 +819,7 @@ shinyApp(ui, server)
 .tiny2.left-column2[
 * Themes change the overall appearance
 
-* Shiny uses a [Bootstrap]("https://getbootstrap.com/") framework
+* Shiny uses a [Bootstrap](https://getbootstrap.com/) framework
 
 * Customization can be made using **bslib**
 
