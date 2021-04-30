@@ -437,13 +437,15 @@ shinyApp(ui, server)
 
 .tiny[
 ```{r, eval=FALSE}
-# Dates
+# Plot outputs
 ui <- fluidPage(
-  plotOutput("plot", width = "400px")
+  plotOutput("plot", width = "800px")
 )
 
 server <- function(input, output, session) {
-  output$plot <- renderPlot(with(mtcars, plot(mpg~hp), res = 96))
+  output$plot <- renderPlot(
+    ggplot(mtcars) + geom_point(aes(mpg,hp))
+  )
 }
 
 shinyApp(ui, server)
@@ -880,7 +882,7 @@ shinyApp(ui, server)
 ---
 class: center, middle, inverse
 
-#### Topic 5: Example
+#### Topic 5: Example 1
 <br/><br/>
 <br/><br/>
 <br/><br/>
@@ -888,14 +890,14 @@ class: center, middle, inverse
 <br/><br/>
 
 ---
-#### Topic 5: Example
+#### Topic 5: Example 1
 
 <center><img src="./images/example.png" alt="ggplot"</></center>
 
 ---
 class: center, middle, inverse
 
-#### Topic 5: Example - data & data cleanup
+#### Topic 5: Example 1 - data & data cleanup
 <br/><br/>
 <br/><br/>
 <br/><br/>
@@ -923,12 +925,11 @@ df <- df %>%
          tmin=tmin* 1.8 + 32,
          tmax=tmax* 1.8 + 32,
          dmt=dmt* 1.8 + 32)
-
 ```
 ]
 
 ---
-#### Topic 5: Example - data & data cleanup
+#### Topic 5: Example 1 - data & data cleanup
 .tiny2.left-column3[
 ```{r, eval=FALSE}
 # Summarize temperature data ----
@@ -982,7 +983,7 @@ monthly.sum <- monthly.avg %>%
 ]
 
 ---
-#### Topic 5: Example - data & data cleanup
+#### Topic 5: Example 1 - data & data cleanup
 .tiny2.left-column10[
 ```{r, eval=FALSE}
 # Hottest day on record for that month
@@ -1026,7 +1027,7 @@ monthly.sum <- monthly.sum %>%
 ]
 
 ---
-#### Topic 5: Example - data & data cleanup
+#### Topic 5: Example 1 - data & data cleanup
 .tiny2.left-column3[
 ```{r, eval=FALSE}
 # Summarize precipitation data ----
@@ -1080,7 +1081,7 @@ prcp.sum <- prcp.avg %>%
 ]
 
 ---
-#### Topic 5: Example - data & data cleanup
+#### Topic 5: Example 1 - data & data cleanup
 .tiny2.left-column8[
 ```{r, eval=FALSE}
 # Most rain on a single day in each month
@@ -1107,7 +1108,7 @@ prcp.sum <- prcp.sum %>%
 ---
 class: center, middle, inverse
 
-#### Topic 5: Example - ui
+#### Topic 5: Example 1 - ui
 <br/><br/>
 <br/><br/>
 <br/><br/>
@@ -1115,7 +1116,7 @@ class: center, middle, inverse
 <br/><br/>
 
 ---
-#### Topic 5: Example - ui
+#### Topic 5: Example 1 - ui
 .tiny2.left-column8[
 ```{r, eval=FALSE}
 # Create the Shiny App ----
@@ -1147,7 +1148,7 @@ ui <- dashboardPage(
 ---
 class: center, middle, inverse
 
-#### Topic 5: Example - server
+#### Topic 5: Example 1 - server
 <br/><br/>
 <br/><br/>
 <br/><br/>
@@ -1155,7 +1156,7 @@ class: center, middle, inverse
 <br/><br/>
 
 ---
-#### Topic 5: Example - server
+#### Topic 5: Example 1 - server
 .tiny2.left-column8[
 ```{r, eval=FALSE}
 # Server function (server)
@@ -1187,7 +1188,7 @@ server <- function(input, output, session) {
 ]
 
 ---
-#### Topic 5: Example - server
+#### Topic 5: Example 1 - server
 .tiny2.left-column8[
 ```{r, eval=FALSE}
 output$legend <- renderPlot({
@@ -1212,16 +1213,16 @@ output$legend <- renderPlot({
         annotate(geom="text", label="Record daily maximum temperature",
                  x=2.1, hjust=0, y=4.5, vjust=0.5, size=3) +
         scale_x_continuous(limits=c(1.45,4.5)) +
-        theme_void() +
-        theme(text=element_text(color="#22211d"),
-              plot.background=element_rect(fill="white", color=NA),
-              panel.background=element_rect(fill="white", color=NA),
-              legend.background=element_rect(fill="white", color=NA))
+        theme_void() + theme(text=element_text(color="#22211d"),
+                             plot.background=element_rect(fill="white", color=NA),
+                             panel.background=element_rect(fill="white", color=NA),
+                             legend.background=element_rect(fill="white", color=NA))
+        
 ```
 ]
 
 ---
-#### Topic 5: Example - server
+#### Topic 5: Example 1 - server
 .tiny2.left-column8[
 ```{r, eval=FALSE}
       else ggplot() +
@@ -1250,7 +1251,7 @@ output$legend <- renderPlot({
 ]
 
 ---
-#### Topic 5: Example - server
+#### Topic 5: Example 1 - server
 .tiny2.left-column8[
 ```{r, eval=FALSE}
   output$Data <- renderTable({
@@ -1268,6 +1269,116 @@ shinyApp(ui, server)
 ```
 ]
 
+---
+class: center, middle, inverse
+
+#### Topic 5: Example 2
+<br/><br/>
+<br/><br/>
+<br/><br/>
+<br/><br/>
+<br/><br/>
+
+---
+#### Topic 5: Example 2
+
+<center><img src="./images/example2.png" alt="ggplot"</></center>
+
+---
+#### Topic 5: Example 2 - data & data cleanup
+.tiny2.left-column8[
+```{r, eval=FALSE}
+# Load packages ----
+pacman::p_load(shiny, shinydashboard, tidyverse, lubridate, patchwork)
+
+# Load climate data ----
+## Read in climate data
+url <- "https://raw.githubusercontent.com/jeremymack-LU/shinyapps/master/data/abe_climate.csv"
+df <- read_csv(url, col_types=cols(tavg=col_double()))
+
+df[df$date==as.Date("1954-05-20"),6] <- NA
+
+# Calculate daily mean temperature (dmt) and day of year (doy)
+df <- df %>% 
+  mutate(dmt=(tmax+tmin)/2,
+         doy=yday(date),
+         tmin=tmin* 1.8 + 32,
+         tmax=tmax* 1.8 + 32,
+         dmt=dmt* 1.8 + 32,
+         year=year(date))
+```
+]
+
+---
+#### Topic 5: Example 2 - data & data cleanup
+.tiny2.left-column3[
+```{r, eval=FALSE}
+# Summarize temperature data ----
+# Calculate monthly means by year
+monthly.means <- df %>%
+  group_by(month(date), year(date)) %>%
+  summarize(avg=mean(dmt, na.rm=TRUE))
+colnames(monthly.means)[1:2] <- c("month","year")
+
+# Calculate the average daytime mean by month
+monthly.avg <- monthly.means %>%
+  group_by(month) %>%
+  summarize(avg=mean(avg, na.rm=TRUE))
+```
+]
+
+---
+#### Topic 5: Example 2 - data & data cleanup
+.tiny2.left-column3[
+```{r, eval=FALSE}
+# Create the Shiny App ----
+# User Interface (ui)
+ui <- dashboardPage(
+  skin="black",
+  dashboardHeader(title="Lehigh Valley Climate"),
+  dashboardSidebar(
+    selectInput(
+      "years",
+      "Select year(s):",
+      seq(1948,2021,1),
+      multiple=TRUE)),
+  dashboardBody(
+    plotOutput("plot")
+  )
+)
+```
+]
+
+.tiny2.right-column3[
+```{r, eval=FALSE}
+# Server function (server)
+server <- function(input, output, session) {
+  labels <- c("Jan","Feb","Mar","Apr","May","Jun",
+              "Jul","Aug","Sep","Oct","Nov","Dec")
+  
+  df.sub <- reactive(
+    monthly.means %>%
+      filter(year%in%input$years)
+  )
+  
+  output$plot <- renderPlot(
+    ggplot() +
+      geom_boxplot(aes(month,avg,group=month),
+                   monthly.means) +
+      geom_point(aes(month,avg,color=factor(year)),
+                 df.sub(),size=3) +
+      scale_x_continuous(breaks=seq(1,12,1),
+                         labels=labels,
+                         expand=c(0.02,0)) +
+      labs(x="Month",
+           y="Temperature (°F)",
+           color="Year") +
+      theme_dark())}
+
+# Run the app
+shinyApp(ui, server)
+```
+]
 ---
 class: center, middle, inverse
 

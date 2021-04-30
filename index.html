@@ -434,13 +434,15 @@ shinyApp(ui, server)
 .tiny[
 
 ```r
-# Dates
+# Plot outputs
 ui &lt;- fluidPage(
-  plotOutput("plot", width = "400px")
+  plotOutput("plot", width = "800px")
 )
 
 server &lt;- function(input, output, session) {
-  output$plot &lt;- renderPlot(with(mtcars, plot(mpg~hp), res = 96))
+  output$plot &lt;- renderPlot(
+    ggplot(mtcars) + geom_point(aes(mpg,hp))
+  )
 }
 
 shinyApp(ui, server)
@@ -886,7 +888,7 @@ shinyApp(ui, server)
 ---
 class: center, middle, inverse
 
-#### Topic 5: Example
+#### Topic 5: Example 1
 &lt;br/&gt;&lt;br/&gt;
 &lt;br/&gt;&lt;br/&gt;
 &lt;br/&gt;&lt;br/&gt;
@@ -894,14 +896,14 @@ class: center, middle, inverse
 &lt;br/&gt;&lt;br/&gt;
 
 ---
-#### Topic 5: Example
+#### Topic 5: Example 1
 
 &lt;center&gt;&lt;img src="./images/example.png" alt="ggplot"&lt;/&gt;&lt;/center&gt;
 
 ---
 class: center, middle, inverse
 
-#### Topic 5: Example - data &amp; data cleanup
+#### Topic 5: Example 1 - data &amp; data cleanup
 &lt;br/&gt;&lt;br/&gt;
 &lt;br/&gt;&lt;br/&gt;
 &lt;br/&gt;&lt;br/&gt;
@@ -934,7 +936,7 @@ df &lt;- df %&gt;%
 ]
 
 ---
-#### Topic 5: Example - data &amp; data cleanup
+#### Topic 5: Example 1 - data &amp; data cleanup
 .tiny2.left-column3[
 
 ```r
@@ -990,7 +992,7 @@ monthly.sum &lt;- monthly.avg %&gt;%
 ]
 
 ---
-#### Topic 5: Example - data &amp; data cleanup
+#### Topic 5: Example 1 - data &amp; data cleanup
 .tiny2.left-column10[
 
 ```r
@@ -1036,7 +1038,7 @@ monthly.sum &lt;- monthly.sum %&gt;%
 ]
 
 ---
-#### Topic 5: Example - data &amp; data cleanup
+#### Topic 5: Example 1 - data &amp; data cleanup
 .tiny2.left-column3[
 
 ```r
@@ -1092,7 +1094,7 @@ prcp.sum &lt;- prcp.avg %&gt;%
 ]
 
 ---
-#### Topic 5: Example - data &amp; data cleanup
+#### Topic 5: Example 1 - data &amp; data cleanup
 .tiny2.left-column8[
 
 ```r
@@ -1120,7 +1122,7 @@ prcp.sum &lt;- prcp.sum %&gt;%
 ---
 class: center, middle, inverse
 
-#### Topic 5: Example - ui
+#### Topic 5: Example 1 - ui
 &lt;br/&gt;&lt;br/&gt;
 &lt;br/&gt;&lt;br/&gt;
 &lt;br/&gt;&lt;br/&gt;
@@ -1128,7 +1130,7 @@ class: center, middle, inverse
 &lt;br/&gt;&lt;br/&gt;
 
 ---
-#### Topic 5: Example - ui
+#### Topic 5: Example 1 - ui
 .tiny2.left-column8[
 
 ```r
@@ -1161,7 +1163,7 @@ ui &lt;- dashboardPage(
 ---
 class: center, middle, inverse
 
-#### Topic 5: Example - server
+#### Topic 5: Example 1 - server
 &lt;br/&gt;&lt;br/&gt;
 &lt;br/&gt;&lt;br/&gt;
 &lt;br/&gt;&lt;br/&gt;
@@ -1169,7 +1171,7 @@ class: center, middle, inverse
 &lt;br/&gt;&lt;br/&gt;
 
 ---
-#### Topic 5: Example - server
+#### Topic 5: Example 1 - server
 .tiny2.left-column8[
 
 ```r
@@ -1202,7 +1204,7 @@ server &lt;- function(input, output, session) {
 ]
 
 ---
-#### Topic 5: Example - server
+#### Topic 5: Example 1 - server
 .tiny2.left-column8[
 
 ```r
@@ -1228,16 +1230,15 @@ output$legend &lt;- renderPlot({
         annotate(geom="text", label="Record daily maximum temperature",
                  x=2.1, hjust=0, y=4.5, vjust=0.5, size=3) +
         scale_x_continuous(limits=c(1.45,4.5)) +
-        theme_void() +
-        theme(text=element_text(color="#22211d"),
-              plot.background=element_rect(fill="white", color=NA),
-              panel.background=element_rect(fill="white", color=NA),
-              legend.background=element_rect(fill="white", color=NA))
+        theme_void() + theme(text=element_text(color="#22211d"),
+                             plot.background=element_rect(fill="white", color=NA),
+                             panel.background=element_rect(fill="white", color=NA),
+                             legend.background=element_rect(fill="white", color=NA))
 ```
 ]
 
 ---
-#### Topic 5: Example - server
+#### Topic 5: Example 1 - server
 .tiny2.left-column8[
 
 ```r
@@ -1267,7 +1268,7 @@ output$legend &lt;- renderPlot({
 ]
 
 ---
-#### Topic 5: Example - server
+#### Topic 5: Example 1 - server
 .tiny2.left-column8[
 
 ```r
@@ -1286,6 +1287,120 @@ shinyApp(ui, server)
 ```
 ]
 
+---
+class: center, middle, inverse
+
+#### Topic 5: Example 2
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+
+---
+#### Topic 5: Example 2
+
+&lt;center&gt;&lt;img src="./images/example2.png" alt="ggplot"&lt;/&gt;&lt;/center&gt;
+
+---
+#### Topic 5: Example 2 - data &amp; data cleanup
+.tiny2.left-column8[
+
+```r
+# Load packages ----
+pacman::p_load(shiny, shinydashboard, tidyverse, lubridate, patchwork)
+
+# Load climate data ----
+## Read in climate data
+url &lt;- "https://raw.githubusercontent.com/jeremymack-LU/shinyapps/master/data/abe_climate.csv"
+df &lt;- read_csv(url, col_types=cols(tavg=col_double()))
+
+df[df$date==as.Date("1954-05-20"),6] &lt;- NA
+
+# Calculate daily mean temperature (dmt) and day of year (doy)
+df &lt;- df %&gt;% 
+  mutate(dmt=(tmax+tmin)/2,
+         doy=yday(date),
+         tmin=tmin* 1.8 + 32,
+         tmax=tmax* 1.8 + 32,
+         dmt=dmt* 1.8 + 32,
+         year=year(date))
+```
+]
+
+---
+#### Topic 5: Example 2 - data &amp; data cleanup
+.tiny2.left-column3[
+
+```r
+# Summarize temperature data ----
+# Calculate monthly means by year
+monthly.means &lt;- df %&gt;%
+  group_by(month(date), year(date)) %&gt;%
+  summarize(avg=mean(dmt, na.rm=TRUE))
+colnames(monthly.means)[1:2] &lt;- c("month","year")
+
+# Calculate the average daytime mean by month
+monthly.avg &lt;- monthly.means %&gt;%
+  group_by(month) %&gt;%
+  summarize(avg=mean(avg, na.rm=TRUE))
+```
+]
+
+---
+#### Topic 5: Example 2 - data &amp; data cleanup
+.tiny2.left-column3[
+
+```r
+# Create the Shiny App ----
+# User Interface (ui)
+ui &lt;- dashboardPage(
+  skin="black",
+  dashboardHeader(title="Lehigh Valley Climate"),
+  dashboardSidebar(
+    selectInput(
+      "years",
+      "Select year(s):",
+      seq(1948,2021,1),
+      multiple=TRUE)),
+  dashboardBody(
+    plotOutput("plot")
+  )
+)
+```
+]
+
+.tiny2.right-column3[
+
+```r
+# Server function (server)
+server &lt;- function(input, output, session) {
+  labels &lt;- c("Jan","Feb","Mar","Apr","May","Jun",
+              "Jul","Aug","Sep","Oct","Nov","Dec")
+  
+  df.sub &lt;- reactive(
+    monthly.means %&gt;%
+      filter(year%in%input$years)
+  )
+  
+  output$plot &lt;- renderPlot(
+    ggplot() +
+      geom_boxplot(aes(month,avg,group=month),
+                   monthly.means) +
+      geom_point(aes(month,avg,color=factor(year)),
+                 df.sub(),size=3) +
+      scale_x_continuous(breaks=seq(1,12,1),
+                         labels=labels,
+                         expand=c(0.02,0)) +
+      labs(x="Month",
+           y="Temperature (°F)",
+           color="Year") +
+      theme_dark())}
+
+# Run the app
+shinyApp(ui, server)
+```
+]
 ---
 class: center, middle, inverse
 
