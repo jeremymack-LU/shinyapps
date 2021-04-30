@@ -48,24 +48,24 @@ class: center, middle, inverse, title-slide
  
  * Focuses on a modern style of programming in R that uses a series of packages known as the [Tidyverse](https://www.tidyverse.org/).
    
- * Slides are available on [Lehigh's Research Computing site](https://confluence.cc.lehigh.edu/display/hpc/Seminars), [Wordpress](https://wordpress.lehigh.edu/jsm4/r-at-lehigh/data-visualization-with-r/), and Github ([slides](https://jeremymack-lu.github.io/rviz/) and [raw code](https://github.com/jeremymack-LU/rviz))
+ * Slides are available on [Lehigh's Research Computing site](https://confluence.cc.lehigh.edu/display/hpc/Seminars), [Wordpress](https://wordpress.lehigh.edu/jsm4/r-at-lehigh/data-visualization-with-r/), and Github ([slides](https://jeremymack-lu.github.io/shinyapps/) and [raw code](https://github.com/jeremymack-LU/shinyapps))
 
 ---
 ### Structure of the presentation
 
 The presentation is split into five topics:
 
- * [**Topic 1:**](https://jeremymack-lu.github.io/rviz/#1) Shiny Apps - an overview
+ * [**Topic 1:**](https://jeremymack-lu.github.io/shinyapps/#4) Shiny Apps - an overview
  
- * [**Topic 2:**](https://jeremymack-lu.github.io/rviz/#1) User Interface (ui)
+ * [**Topic 2:**](https://jeremymack-lu.github.io/shinyapps/#14) User Interface (ui)
  
- * [**Topic 3:**](https://jeremymack-lu.github.io/rviz/#1) Reactive Programming (server)
+ * [**Topic 3:**](https://jeremymack-lu.github.io/shinyapps/#20) Reactive Programming (server)
  
- * [**Topic 4:**](https://jeremymack-lu.github.io/rviz/#1) Layouts and Themes
+ * [**Topic 4:**](https://jeremymack-lu.github.io/shinyapps/#28) Layouts and Themes
  
- * [**Topic 5:**](https://jeremymack-lu.github.io/rviz/#1) Example
+ * [**Topic 5:**](https://jeremymack-lu.github.io/shinyapps/#39) Example
  
- * [**Topic 6:**](https://jeremymack-lu.github.io/rviz/#1) Resources
+ * [**Topic 6:**](https://jeremymack-lu.github.io/shinyapps/#54) Resources
 
 ---
 class: center, middle, inverse
@@ -1151,7 +1151,7 @@ ui &lt;- dashboardPage(
       column(3,plotOutput("legend"))
     ),
     fluidRow(
-      column(12,align="center",tableOutput("Data"))
+      column(9,align="center",tableOutput("Data"))
     )
   )
 )
@@ -1285,6 +1285,16 @@ output$legend &lt;- renderPlot({
 shinyApp(ui, server)
 ```
 ]
+
+---
+class: center, middle, inverse
+
+#### Topic 6: Resources
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
+&lt;br/&gt;&lt;br/&gt;
 
 ---
 class: inverse
