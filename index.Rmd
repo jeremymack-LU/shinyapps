@@ -1137,7 +1137,7 @@ ui <- dashboardPage(
       column(3,plotOutput("legend"))
     ),
     fluidRow(
-      column(12,align="center",tableOutput("Data"))
+      column(9,align="center",tableOutput("Data"))
     )
   )
 )
@@ -1280,6 +1280,10 @@ class: inverse
  * RStudio tutortials - [link](https://shiny.rstudio.com/tutorial/)
  
  * Shiny extensions - [link](https://github.com/nanxstats/awesome-shiny-extensions)
+
+.pull-right[
+<center><img src="./images/master_shiny.jpg" height=350 alt="ggplot"</></center>
+]
  
 ---
 class: center, middle, inverse, title-slide

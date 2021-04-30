@@ -174,7 +174,7 @@ ui <- dashboardPage(
       column(3,plotOutput("legend"))
     ),
     fluidRow(
-      column(12,align="center",tableOutput("Data"))
+      column(9,align="center",tableOutput("Data"))
     )
   )
 )
