@@ -613,6 +613,24 @@ shinyApp(ui, server)
 ]
 
 ---
+class: inverse
+
+#### Review - Server:
+* Application's back end logic.
+
+--
+
+* Reacts to inputs from the ui and **produces outputs** to fill in ui placeholders.
+
+ * Cannot assign inputs in the server function ("read-only").
+ 
+ * **input** and **output** objects are read in reactive context.
+
+--
+
+* Error messages can be a bit more cryptic than regular R error messages.
+
+---
 class: center, middle, inverse
 
 #### Topic 4: Layouts and Themes
@@ -907,6 +925,38 @@ shinyApp(ui, server)
 ]
 
 ---
+#### Topic 4: Layouts and Themes
+.tiny2.left-column2[
+* Themes change the overall appearance
+
+* Shiny uses a [Bootstrap](https://getbootstrap.com/) framework
+
+* Custom HTML and CSS can be applied
+]
+
+[&lt;center&gt;&lt;img src="./images/html.png" height=350 alt="ggplot"&lt;/&gt;&lt;/center&gt;](https://shiny.rstudio.com/articles/html-tags.html)
+
+---
+#### Topic 4: Layouts and Themes
+.tiny2.left-column2[
+* Layouts add structure to an application
+
+* Themes change the overall appearance
+
+* Extension packages exist that combine the two
+  
+  * RStudio - **shinydashboard**
+  
+  * [Awesome Shiny Extensions](https://github.com/nanxstats/awesome-shiny-extensions)
+]
+
+.right-column2[
+&lt;center&gt;&lt;img src="./images/awesome.png" height=250 alt="Awesome shiny extensions" &lt;/center&gt;
+]
+
+
+
+---
 class: center, middle, inverse
 
 #### Topic 5: Example - Lehigh Valley Temperature
@@ -1146,6 +1196,25 @@ class: center, middle, inverse
 &lt;br/&gt;&lt;br/&gt;
 &lt;br/&gt;&lt;br/&gt;
 &lt;br/&gt;&lt;br/&gt;
+
+---
+#### Topic 6: Deploying Shiny Apps
+.right-column2[
+&lt;center&gt;&lt;img src="./images/shiny_hex.png" height=250 alt="Shiny hex sticker image" &lt;/center&gt;
+]
+
+.tiny3.left-column2[
+* Two methods for deployment:
+  - [Run locally](https://shiny.rstudio.com/articles/deployment-local.html)
+ 
+     * Gist, GitHub repository, .zip, R package
+     
+     * Gist example:
+    
+    ```r
+     shiny::runGist('72d6b068a3377972f385f053c2d87388')
+    ```
+]
 
 ---
 #### Topic 6: Deploying Shiny Apps
