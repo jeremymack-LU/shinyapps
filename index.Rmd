@@ -43,6 +43,13 @@ xaringanExtra::style_panelset_tabs(
 ## Shiny Apps with R
 #### Jeremy Mack
 #### Lehigh University - Digital Scholarship Team
+<img src="./images/notes2.png" alt="RStudio" height=242/>
+
+---
+class: center, middle, inverse, title-slide
+## Shiny Apps with R
+#### Jeremy Mack
+#### Lehigh University - Digital Scholarship Team
 <img src="images/rstudio_hex.png" alt="RStudio hex sticker image" height=150/> &nbsp;
 <img src="images/tidyverse_hex.png" alt="Tidyverse hex sticker image" height=150/> &nbsp;
 <img src="images/shiny_hex.png" alt="Shiny hex sticker image" height=150/>
@@ -946,8 +953,6 @@ shinyApp(ui, server)
 .right-column2[
 <center><img src="./images/awesome.png" height=250 alt="Awesome shiny extensions" </center>
 ]
-
-
 
 ---
 class: center, middle, inverse
