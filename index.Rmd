@@ -1145,16 +1145,17 @@ map    <- tibble(lat=40.65, lng=-75.442, zoom=13)
 # User Interface (ui)
 ui <- dashboardPage(skin="black",
                     dashboardHeader(
-                      title="Lehigh Valley Temperature", titleWidth=350),
+                      title="Lehigh Valley Temperature", titleWidth=300),
                     dashboardSidebar(
-                      width=350,
+                      width=300,
                       selectInput(
                         inputId="years",
                         label="Select year(s):",
-                        choices=seq(1948,2021,1),
-                        multiple=TRUE)),
+                        choices=seq(1948,2022,1),
+                        multiple=TRUE,
+                        selected=2022)),
                     dashboardBody(
-                      fluidRow(plotOutput("plot", height='500px')),
+                      fluidRow(column(12,plotOutput("plot", height='500px'))),
                       br(),
                       fluidRow(column(8,tableOutput("data")),
                                column(4,leafletOutput("map"),
@@ -1192,7 +1193,7 @@ server <- function(input, output, session) {
                               geom_point(aes(month,avg,color=factor(year)),df.sub(),size=3) +
                               scale_x_continuous(breaks=seq(1,12,1),labels=labels,expand=c(0.02,0)) +
                               labs(x="Month",y="Temperature (°F)",color="Year") + theme_dark())
-  output$data <- renderTable(
+  output$data <- renderTable({
     if(is.null(input$years)) monthly.sum.W %>% rename('Annual Mean'=Annual_mean, 'Annual Diff'=Annual_diff)
     else df.sub() %>%
       mutate(month=as.integer(month),label=month.abb[month],Year=as.integer(year)) %>%
@@ -1201,7 +1202,7 @@ server <- function(input, output, session) {
       mutate(Annual_diff=Annual_mean-mean(df$dmt, na.rm=TRUE)) %>%
       mutate(Year=as.character(Year)) %>%
       bind_rows(monthly.sum.W) %>%
-      rename('Annual Mean'=Annual_mean, 'Annual Diff'=Annual_diff))
+      rename('Annual Mean'=Annual_mean, 'Annual Diff'=Annual_diff)}, digits=1)
 ```
 ]
 
@@ -1218,7 +1219,7 @@ server <- function(input, output, session) {
                               geom_point(aes(month,avg,color=factor(year)),df.sub(),size=3) +
                               scale_x_continuous(breaks=seq(1,12,1),labels=labels,expand=c(0.02,0)) +
                               labs(x="Month",y="Temperature (°F)",color="Year") + theme_dark())
-  output$data <- renderTable(
+  output$data <- renderTable({
     if(is.null(input$years)) monthly.sum.W %>% rename('Annual Mean'=Annual_mean, 'Annual Diff'=Annual_diff)
     else df.sub() %>%
       mutate(month=as.integer(month),label=month.abb[month],Year=as.integer(year)) %>%
@@ -1227,7 +1228,7 @@ server <- function(input, output, session) {
       mutate(Annual_diff=Annual_mean-mean(df$dmt, na.rm=TRUE)) %>%
       mutate(Year=as.character(Year)) %>%
       bind_rows(monthly.sum.W) %>%
-      rename('Annual Mean'=Annual_mean, 'Annual Diff'=Annual_diff))
+      rename('Annual Mean'=Annual_mean, 'Annual Diff'=Annual_diff)}, digits=1)
   output$map <- renderLeaflet(
     leaflet() %>%
       setView(lat=map$lat, lng=map$lng, zoom=map$zoom) %>%
