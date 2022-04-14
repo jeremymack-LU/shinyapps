@@ -566,6 +566,28 @@ shinyApp(ui, server)
 ---
 #### Topic 3: Reactive Programming (server)
 .right-column2[
+<center><img src="./images/shiny_hex.png" height=250 alt="Shiny hex sticker image" </center>
+]
+
+.left-column2[
+* Application's back end logic
+
+* **Server** function
+
+* Creates (renders) outputs based on inputs from the browser
+
+* Render functions should match output functions
+{{content}}
+]
+
+--
+ - renderText
+ - renderPlot
+ - renderTable, or renderDataTable
+
+---
+#### Topic 3: Reactive Programming (server)
+.right-column2[
 <center><img src="./images/error1.png" width=100% alt="error screenshot" </center>
 <center><img src="./images/error2.png" width=100% alt="error screenshot" </center>
 ]
@@ -576,6 +598,8 @@ shinyApp(ui, server)
 * **Server** function
 
 * Creates (renders) outputs based on inputs from the browser
+
+* Render functions should match output functions
 
 * Some things to remember:
  * **input** objects are read-only
@@ -594,6 +618,8 @@ shinyApp(ui, server)
 * **Server** function
 
 * Creates (renders) outputs based on inputs from the browser
+
+* Render functions should match output functions
 
 * Some things to remember:
  * **input** objects are read-only
@@ -614,6 +640,8 @@ shinyApp(ui, server)
 * **Server** function
 
 * Creates (renders) outputs based on inputs from the browser
+
+* Render functions should match output functions
 
 * Some things to remember:
  * **input** objects are read-only
@@ -637,6 +665,8 @@ shinyApp(ui, server)
 
 * Creates (renders) outputs based on inputs from the browser
 
+* Render functions should match output functions
+
 * Some things to remember:
  * **input** objects are read-only
  
@@ -658,10 +688,8 @@ class: inverse
  * Cannot assign inputs in the server function ("read-only").
  
  * **input** and **output** objects are read in reactive context.
-
---
-
-* Error messages can be a bit more cryptic than regular R error messages.
+ 
+ * Render functions should match output functions
 
 ---
 class: center, middle, inverse
