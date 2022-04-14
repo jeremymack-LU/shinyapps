@@ -1226,7 +1226,7 @@ server <- function(input, output, session) {
     else df.sub() %>%
       mutate(month=as.integer(month),label=month.abb[month],Year=as.integer(year)) %>%
       pivot_wider(id_cols=Year,names_from=label,values_from=avg) %>%
-      mutate(Annual_mean=rowMeans(.[,2:13], na.rm=TRUE)) %>%
+      mutate(Annual_mean=rowMeans(.[,-1], na.rm=TRUE)) %>%
       mutate(Annual_diff=Annual_mean-mean(df$dmt, na.rm=TRUE)) %>%
       mutate(Year=as.character(Year)) %>%
       bind_rows(monthly.sum.W) %>%
@@ -1252,7 +1252,7 @@ server <- function(input, output, session) {
     else df.sub() %>%
       mutate(month=as.integer(month),label=month.abb[month],Year=as.integer(year)) %>%
       pivot_wider(id_cols=Year,names_from=label,values_from=avg) %>%
-      mutate(Annual_mean=rowMeans(.[,2:13], na.rm=TRUE)) %>%
+      mutate(Annual_mean=rowMeans(.[,-1], na.rm=TRUE)) %>%
       mutate(Annual_diff=Annual_mean-mean(df$dmt, na.rm=TRUE)) %>%
       mutate(Year=as.character(Year)) %>%
       bind_rows(monthly.sum.W) %>%
