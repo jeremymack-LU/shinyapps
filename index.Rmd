@@ -10,7 +10,7 @@ output:
     seal: false
     lib_dir: libs
     nature:
-      highlightStyle: github
+      highlightStyle: tomorrow-night-bright
       highlightLines: true
       countIncrementalSlides: false
       slideNumberFormat: "%current%"
@@ -37,6 +37,16 @@ xaringanExtra::style_panelset_tabs(
   active_foreground = "#0051BA",
   hover_foreground = "#d22",
   font_family = "Roboto"
+)
+```
+
+```{r xaringanExtra-clipboard, echo=FALSE}
+htmltools::tagList(
+   xaringanExtra::use_clipboard(
+    button_text = "<i class=\"fa fa-clipboard\"></i>",
+    success_text = "<i class=\"fa fa-check\" style=\"color: #90BE6D\"></i>",
+  ),
+  rmarkdown::html_dependency_font_awesome()
 )
 ```
 
@@ -116,7 +126,7 @@ class: center, middle, inverse
 ---
 #### Topic 1: Shiny Apps - an overview
 
-[<center><img src="./images/lehighriver_shiny.png" alt="ggplot"</></center>](https://jeremymack.shinyapps.io/lehighriver/)
+[<center><img src="./images/purpleair_shiny.png" alt="ggplot"</></center>](https://jeremymack.shinyapps.io/purpleair/)
 
 ---
 #### Topic 1: Shiny Apps - an overview
@@ -246,7 +256,7 @@ class: center, middle, inverse
 .left-column2[
 * Application's front end appearance
 
-* Collection of inputs and outputs
+* Collection of **inputs** and **outputs**
 {{content}}
 ]
 
@@ -264,6 +274,7 @@ class: center, middle, inverse
      * Limited choices
      * File uploads
      * Action buttons
+
 ---
 #### Topic 2: User Interface (ui)
 .panelset[
@@ -272,7 +283,8 @@ class: center, middle, inverse
 
 .tiny[
 ```{r, eval=FALSE}
-# Free text
+library(shiny)
+
 ui <- fluidPage(
   textInput("name", "What's your name?"),
   passwordInput("password", "What's your password?"),
@@ -289,7 +301,8 @@ shinyApp(ui, server)
 
 .tiny[
 ```{r, eval=FALSE}
-# Numeric inputs
+library(shiny)
+
 ui <- fluidPage(
   numericInput("num", "Number one", value = 0, min = 0, max = 100),
   sliderInput("num2", "Number two", value = 50, min = 0, max = 100),
@@ -306,7 +319,8 @@ shinyApp(ui, server)
 
 .tiny[
 ```{r, eval=FALSE}
-# Dates
+library(shiny)
+
 ui <- fluidPage(
   dateInput("dob", "When were you born?"),
   dateRangeInput("range", "What is the range of your data?")
@@ -322,25 +336,27 @@ shinyApp(ui, server)
 
 .tiny[
 ```{r, eval=FALSE}
-# Limited choices
-# Drop downs (single or multiple choices)
-ui <- fluidPage(
-  selectInput("state", "What's your favorite state?", state.name),
-  selectInput("state2", "What's your favourite state(s)?", state.name,
-              multiple = TRUE)
-)
-# Radio buttons (single choice)
+library(shiny)
+
+# Assign animal values
 animals <- c("dog", "cat", "mouse", "bird", "other", "I don't like animals")
 
 ui <- fluidPage(
-  radioButtons("animal", "What's your favorite animal?", animals)
-)
-# Checkbox (multiple choices)
-ui <- fluidPage(
+  # Drop downs (single or multiple choices)
+  selectInput("state", "What's your favorite state?", state.name),
+  selectInput("state2", "What's your favourite state(s)?", state.name,
+              multiple = TRUE),
+  
+  # Radio buttons (single choice)
   radioButtons("animal", "What's your favorite animal?", animals),
-  checkboxGroupInput("animal", "What animals do you like?", animals)
+  
+  # Checkbox (multiple choices)
+  checkboxGroupInput("animal2", "What animals do you like?", animals)
 )
 
+server <- function(input, output, session) {}
+
+shinyApp(ui, server)
 ```
 ]]
 
@@ -348,7 +364,8 @@ ui <- fluidPage(
 
 .tiny[
 ```{r, eval=FALSE}
-# File uploads
+library(shiny)
+
 ui <- fluidPage(
   fileInput("upload", NULL)
 )
@@ -363,7 +380,8 @@ shinyApp(ui, server)
 
 .tiny[
 ```{r, eval=FALSE}
-# Action buttons
+library(shiny)
+
 ui <- fluidPage(
   actionButton("click", "Click me!"),
   actionButton("download", "Download")
@@ -386,7 +404,11 @@ shinyApp(ui, server)
 .left-column2[
 * Application's front end appearance
 
-* Collection of inputs and outputs
+* Collection of **inputs** and **outputs**
+{{content}}
+]
+
+--
 
 * Output functions
   - Creates placeholders later filled by the server function (render)
@@ -397,7 +419,6 @@ shinyApp(ui, server)
      * Text
      * Tables
      * Plots
-]
 
 ---
 #### Topic 2: User Interface (ui)
@@ -407,7 +428,8 @@ shinyApp(ui, server)
 
 .tiny[
 ```{r, eval=FALSE}
-# Text output
+library(shiny)
+
 ui <- fluidPage(
   textInput("name", "What's your name?"),
   textOutput("text")
@@ -427,7 +449,8 @@ shinyApp(ui, server)
 
 .tiny[
 ```{r, eval=FALSE}
-# Table outputs
+library(shiny)
+
 ui <- fluidPage(
   tableOutput("static"),
   dataTableOutput("dynamic")
@@ -446,7 +469,9 @@ shinyApp(ui, server)
 
 .tiny[
 ```{r, eval=FALSE}
-# Plot outputs
+library(shiny)
+library(ggplot2)
+
 ui <- fluidPage(
   plotOutput("plot", width = "800px")
 )
@@ -970,12 +995,36 @@ class: center, middle, inverse
 <center><img src="./images/climate_shiny.png" alt="ggplot"</></center>
 
 ---
-#### Topic 5: Example - data & data cleanup
+#### Topic 5: Example - required packages
 .tiny2.left-column8[
 ```{r, eval=FALSE}
 # Load packages ----
-pacman::p_load(tidyverse,rnoaa,lubridate,shiny,shinydashboard,leaflet)
+library(shiny)           # Web application framework
+library(shinydashboard)  # Dashboard templates for Shiny
+library(readr)           # Read in rectangular text files
+library(dplyr)           # Data manipulation
+library(tidyr)           # Data cleanup
+library(ggplot2)         # Grammar of graphics data viz
+library(lubridate)       # Working with dates
+library(leaflet)         # JS leaflet library
+```
+]
 
+--
+
+.tiny2.left-column8[
+* Note that bulk loading techniques will not work when deployed
+```{r, eval=FALSE}
+# Load packages ----
+library(pacman)
+pload(shiny,shinydashboard,readr,dplyr,tidyr,ggplot2,lubridate,leaflet)
+```
+]
+
+---
+#### Topic 5: Example - data & data cleanup
+.tiny2.left-column8[
+```{r, eval=FALSE}
 # Load climate data ----
 # Read in climate data
 url <- "https://raw.githubusercontent.com/jeremymack-LU/shinyapps/master/data/abe_climate.csv"
@@ -1088,6 +1137,10 @@ head(monthly.sum)
 #### Topic 5: Example - create Shiny App
 .tiny2.left-column8[
 ```{r, eval=FALSE}
+# Assign labels and map settings
+labels <- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+map    <- tibble(lat=40.65, lng=-75.442, zoom=13)
+
 # Create the Shiny App ----
 # User Interface (ui)
 ui <- dashboardPage(skin="black",
@@ -1117,7 +1170,6 @@ ui <- dashboardPage(skin="black",
 ```{r, eval=FALSE}
 # Server function (server)
 server <- function(input, output, session) {
-  labels <- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
   df.sub <- reactive(monthly.means %>% filter(year %in% input$years))
   output$plot <- renderPlot(ggplot() +
                               geom_boxplot(aes(month,avg,group=month), monthly.means) +
@@ -1133,7 +1185,6 @@ server <- function(input, output, session) {
 ```{r, eval=FALSE}
 # Server function (server)
 server <- function(input, output, session) {
-  labels <- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
   df.sub <- reactive(monthly.means %>% filter(year %in% input$years))
   output$plot <- renderPlot(ggplot() +
                               geom_boxplot(aes(month,avg,group=month), monthly.means) +
@@ -1142,8 +1193,9 @@ server <- function(input, output, session) {
                               scale_x_continuous(breaks=seq(1,12,1),labels=labels,expand=c(0.02,0)) +
                               labs(x="Month",y="Temperature (°F)",color="Year") + theme_dark())
   output$data <- renderTable(
-    if(is.null(input$years)) paste("To plot data, please select a year")
-    else df.sub() %>% mutate(month=as.integer(month),label=month.abb[month],Year=as.integer(year)) %>%
+    if(is.null(input$years)) monthly.sum.W %>% rename('Annual Mean'=Annual_mean, 'Annual Diff'=Annual_diff)
+    else df.sub() %>%
+      mutate(month=as.integer(month),label=month.abb[month],Year=as.integer(year)) %>%
       pivot_wider(id_cols=Year,names_from=label,values_from=avg) %>%
       mutate(Annual_mean=rowMeans(.[,2:13], na.rm=TRUE)) %>%
       mutate(Annual_diff=Annual_mean-mean(df$dmt, na.rm=TRUE)) %>%
@@ -1159,7 +1211,6 @@ server <- function(input, output, session) {
 ```{r, eval=FALSE}
 # Server function (server)
 server <- function(input, output, session) {
-  labels <- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
   df.sub <- reactive(monthly.means %>% filter(year %in% input$years))
   output$plot <- renderPlot(ggplot() +
                               geom_boxplot(aes(month,avg,group=month), monthly.means) +
@@ -1168,17 +1219,18 @@ server <- function(input, output, session) {
                               scale_x_continuous(breaks=seq(1,12,1),labels=labels,expand=c(0.02,0)) +
                               labs(x="Month",y="Temperature (°F)",color="Year") + theme_dark())
   output$data <- renderTable(
-    if(is.null(input$years)) paste("To plot data, please select a year")
-    else df.sub() %>% mutate(month=as.integer(month),label=month.abb[month],Year=as.integer(year)) %>%
+    if(is.null(input$years)) monthly.sum.W %>% rename('Annual Mean'=Annual_mean, 'Annual Diff'=Annual_diff)
+    else df.sub() %>%
+      mutate(month=as.integer(month),label=month.abb[month],Year=as.integer(year)) %>%
       pivot_wider(id_cols=Year,names_from=label,values_from=avg) %>%
       mutate(Annual_mean=rowMeans(.[,2:13], na.rm=TRUE)) %>%
       mutate(Annual_diff=Annual_mean-mean(df$dmt, na.rm=TRUE)) %>%
       mutate(Year=as.character(Year)) %>%
       bind_rows(monthly.sum.W) %>%
       rename('Annual Mean'=Annual_mean, 'Annual Diff'=Annual_diff))
-  map <- tibble(lat=40.65, lng=-75.442, zoom=13)
   output$map <- renderLeaflet(
-    leaflet() %>% setView(lat=map$lat, lng=map$lng, zoom=map$zoom) %>%
+    leaflet() %>%
+      setView(lat=map$lat, lng=map$lng, zoom=map$zoom) %>%
       addTiles("https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png") %>%
       addCircleMarkers(lng=map$lng, lat=map$lat,
         popup='Lehigh Valley International Airport<br>NOAA Weather Station', stroke=FALSE, fillOpacity=0.5))}
@@ -1216,7 +1268,7 @@ class: center, middle, inverse
 * Two methods for deployment:
   - [Run locally](https://shiny.rstudio.com/articles/deployment-local.html)
  
-     * Gist, GitHub repository, .zip, R package
+     * Gist, GitHub repository, .zip,<br>R package
      
      * Gist example:
     ```{r, eval=FALSE}
@@ -1234,7 +1286,7 @@ class: center, middle, inverse
 * Two methods for deployment:
   - [Run locally](https://shiny.rstudio.com/articles/deployment-local.html)
  
-     * Gist, GitHub repository, .zip, R package
+     * Gist, GitHub repository, .zip,<br>R package
      
      * Gist example:
     ```{r, eval=FALSE}
@@ -1257,9 +1309,7 @@ class: center, middle, inverse
 <br/><br/>
 
 ---
-class: inverse
-
-#### Review - Shiny App Resources:
+#### Topic 7: Resources
 
 * Shiny Apps
 

@@ -4,11 +4,17 @@
     <title>Shiny Apps with R</title>
     <meta charset="utf-8" />
     <meta name="author" content="Jeremy Mack" />
-    <script src="libs/header-attrs-2.9/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.13/header-attrs.js"></script>
     <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
     <script src="libs/panelset-0.2.6/panelset.js"></script>
     <link href="libs/tile-view-0.2.6/tile-view.css" rel="stylesheet" />
     <script src="libs/tile-view-0.2.6/tile-view.js"></script>
+    <script src="libs/clipboard-2.0.6/clipboard.min.js"></script>
+    <link href="libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard-0.2.6/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"<i class=\"fa fa-clipboard\"><\/i>","success":"<i class=\"fa fa-check\" style=\"color: #90BE6D\"><\/i>","error":"Press Ctrl+C to Copy"})</script>
+    <link href="libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
     <link rel="stylesheet" href="custom.css" type="text/css" />
     <link rel="stylesheet" href="default-fonts.css" type="text/css" />
   </head>
@@ -29,6 +35,8 @@ class: center, middle, inverse, title-slide
 
 
 <style>.panelset{--panel-tab-active-foreground: #0051BA;--panel-tab-hover-foreground: #d22;--panel-tab-font-family: Roboto;}</style>
+
+
 
 ## Shiny Apps with R
 #### Jeremy Mack
@@ -106,7 +114,7 @@ class: center, middle, inverse
 ---
 #### Topic 1: Shiny Apps - an overview
 
-[&lt;center&gt;&lt;img src="./images/lehighriver_shiny.png" alt="ggplot"&lt;/&gt;&lt;/center&gt;](https://jeremymack.shinyapps.io/lehighriver/)
+[&lt;center&gt;&lt;img src="./images/purpleair_shiny.png" alt="ggplot"&lt;/&gt;&lt;/center&gt;](https://jeremymack.shinyapps.io/purpleair/)
 
 ---
 #### Topic 1: Shiny Apps - an overview
@@ -236,7 +244,7 @@ class: center, middle, inverse
 .left-column2[
 * Application's front end appearance
 
-* Collection of inputs and outputs
+* Collection of **inputs** and **outputs**
 {{content}}
 ]
 
@@ -254,6 +262,7 @@ class: center, middle, inverse
      * Limited choices
      * File uploads
      * Action buttons
+
 ---
 #### Topic 2: User Interface (ui)
 .panelset[
@@ -263,7 +272,8 @@ class: center, middle, inverse
 .tiny[
 
 ```r
-# Free text
+library(shiny)
+
 ui &lt;- fluidPage(
   textInput("name", "What's your name?"),
   passwordInput("password", "What's your password?"),
@@ -281,7 +291,8 @@ shinyApp(ui, server)
 .tiny[
 
 ```r
-# Numeric inputs
+library(shiny)
+
 ui &lt;- fluidPage(
   numericInput("num", "Number one", value = 0, min = 0, max = 100),
   sliderInput("num2", "Number two", value = 50, min = 0, max = 100),
@@ -299,7 +310,8 @@ shinyApp(ui, server)
 .tiny[
 
 ```r
-# Dates
+library(shiny)
+
 ui &lt;- fluidPage(
   dateInput("dob", "When were you born?"),
   dateRangeInput("range", "What is the range of your data?")
@@ -316,24 +328,27 @@ shinyApp(ui, server)
 .tiny[
 
 ```r
-# Limited choices
-# Drop downs (single or multiple choices)
-ui &lt;- fluidPage(
-  selectInput("state", "What's your favorite state?", state.name),
-  selectInput("state2", "What's your favourite state(s)?", state.name,
-              multiple = TRUE)
-)
-# Radio buttons (single choice)
+library(shiny)
+
+# Assign animal values
 animals &lt;- c("dog", "cat", "mouse", "bird", "other", "I don't like animals")
 
 ui &lt;- fluidPage(
-  radioButtons("animal", "What's your favorite animal?", animals)
-)
-# Checkbox (multiple choices)
-ui &lt;- fluidPage(
+  # Drop downs (single or multiple choices)
+  selectInput("state", "What's your favorite state?", state.name),
+  selectInput("state2", "What's your favourite state(s)?", state.name,
+              multiple = TRUE),
+  
+  # Radio buttons (single choice)
   radioButtons("animal", "What's your favorite animal?", animals),
-  checkboxGroupInput("animal", "What animals do you like?", animals)
+  
+  # Checkbox (multiple choices)
+  checkboxGroupInput("animal2", "What animals do you like?", animals)
 )
+
+server &lt;- function(input, output, session) {}
+
+shinyApp(ui, server)
 ```
 ]]
 
@@ -342,7 +357,8 @@ ui &lt;- fluidPage(
 .tiny[
 
 ```r
-# File uploads
+library(shiny)
+
 ui &lt;- fluidPage(
   fileInput("upload", NULL)
 )
@@ -358,7 +374,8 @@ shinyApp(ui, server)
 .tiny[
 
 ```r
-# Action buttons
+library(shiny)
+
 ui &lt;- fluidPage(
   actionButton("click", "Click me!"),
   actionButton("download", "Download")
@@ -381,7 +398,11 @@ shinyApp(ui, server)
 .left-column2[
 * Application's front end appearance
 
-* Collection of inputs and outputs
+* Collection of **inputs** and **outputs**
+{{content}}
+]
+
+--
 
 * Output functions
   - Creates placeholders later filled by the server function (render)
@@ -392,7 +413,6 @@ shinyApp(ui, server)
      * Text
      * Tables
      * Plots
-]
 
 ---
 #### Topic 2: User Interface (ui)
@@ -403,7 +423,8 @@ shinyApp(ui, server)
 .tiny[
 
 ```r
-# Text output
+library(shiny)
+
 ui &lt;- fluidPage(
   textInput("name", "What's your name?"),
   textOutput("text")
@@ -424,7 +445,8 @@ shinyApp(ui, server)
 .tiny[
 
 ```r
-# Table outputs
+library(shiny)
+
 ui &lt;- fluidPage(
   tableOutput("static"),
   dataTableOutput("dynamic")
@@ -444,7 +466,9 @@ shinyApp(ui, server)
 .tiny[
 
 ```r
-# Plot outputs
+library(shiny)
+library(ggplot2)
+
 ui &lt;- fluidPage(
   plotOutput("plot", width = "800px")
 )
@@ -977,13 +1001,39 @@ class: center, middle, inverse
 &lt;center&gt;&lt;img src="./images/climate_shiny.png" alt="ggplot"&lt;/&gt;&lt;/center&gt;
 
 ---
-#### Topic 5: Example - data &amp; data cleanup
+#### Topic 5: Example - required packages
 .tiny2.left-column8[
 
 ```r
 # Load packages ----
-pacman::p_load(tidyverse,rnoaa,lubridate,shiny,shinydashboard,leaflet)
+library(shiny)           # Web application framework
+library(shinydashboard)  # Dashboard templates for Shiny
+library(readr)           # Read in rectangular text files
+library(dplyr)           # Data manipulation
+library(tidyr)           # Data cleanup
+library(ggplot2)         # Grammar of graphics data viz
+library(lubridate)       # Working with dates
+library(leaflet)         # JS leaflet library
+```
+]
 
+--
+
+.tiny2.left-column8[
+* Note that bulk loading techniques will not work when deployed
+
+```r
+# Load packages ----
+library(pacman)
+pload(shiny,shinydashboard,readr,dplyr,tidyr,ggplot2,lubridate,leaflet)
+```
+]
+
+---
+#### Topic 5: Example - data &amp; data cleanup
+.tiny2.left-column8[
+
+```r
 # Load climate data ----
 # Read in climate data
 url &lt;- "https://raw.githubusercontent.com/jeremymack-LU/shinyapps/master/data/abe_climate.csv"
@@ -1067,7 +1117,7 @@ head(monthly.sum)
 ##   month   avg
 ##   &lt;dbl&gt; &lt;dbl&gt;
 ## 1     1  28.2
-## 2     2  30.6
+## 2     2  30.7
 ## 3     3  39.3
 ## 4     4  50.4
 ## 5     5  60.6
@@ -1080,6 +1130,10 @@ head(monthly.sum)
 .tiny2.left-column8[
 
 ```r
+# Assign labels and map settings
+labels &lt;- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+map    &lt;- tibble(lat=40.65, lng=-75.442, zoom=13)
+
 # Create the Shiny App ----
 # User Interface (ui)
 ui &lt;- dashboardPage(skin="black",
@@ -1110,7 +1164,6 @@ ui &lt;- dashboardPage(skin="black",
 ```r
 # Server function (server)
 server &lt;- function(input, output, session) {
-  labels &lt;- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
   df.sub &lt;- reactive(monthly.means %&gt;% filter(year %in% input$years))
   output$plot &lt;- renderPlot(ggplot() +
                               geom_boxplot(aes(month,avg,group=month), monthly.means) +
@@ -1127,7 +1180,6 @@ server &lt;- function(input, output, session) {
 ```r
 # Server function (server)
 server &lt;- function(input, output, session) {
-  labels &lt;- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
   df.sub &lt;- reactive(monthly.means %&gt;% filter(year %in% input$years))
   output$plot &lt;- renderPlot(ggplot() +
                               geom_boxplot(aes(month,avg,group=month), monthly.means) +
@@ -1136,8 +1188,9 @@ server &lt;- function(input, output, session) {
                               scale_x_continuous(breaks=seq(1,12,1),labels=labels,expand=c(0.02,0)) +
                               labs(x="Month",y="Temperature (°F)",color="Year") + theme_dark())
   output$data &lt;- renderTable(
-    if(is.null(input$years)) paste("To plot data, please select a year")
-    else df.sub() %&gt;% mutate(month=as.integer(month),label=month.abb[month],Year=as.integer(year)) %&gt;%
+    if(is.null(input$years)) monthly.sum.W %&gt;% rename('Annual Mean'=Annual_mean, 'Annual Diff'=Annual_diff)
+    else df.sub() %&gt;%
+      mutate(month=as.integer(month),label=month.abb[month],Year=as.integer(year)) %&gt;%
       pivot_wider(id_cols=Year,names_from=label,values_from=avg) %&gt;%
       mutate(Annual_mean=rowMeans(.[,2:13], na.rm=TRUE)) %&gt;%
       mutate(Annual_diff=Annual_mean-mean(df$dmt, na.rm=TRUE)) %&gt;%
@@ -1154,7 +1207,6 @@ server &lt;- function(input, output, session) {
 ```r
 # Server function (server)
 server &lt;- function(input, output, session) {
-  labels &lt;- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
   df.sub &lt;- reactive(monthly.means %&gt;% filter(year %in% input$years))
   output$plot &lt;- renderPlot(ggplot() +
                               geom_boxplot(aes(month,avg,group=month), monthly.means) +
@@ -1163,17 +1215,18 @@ server &lt;- function(input, output, session) {
                               scale_x_continuous(breaks=seq(1,12,1),labels=labels,expand=c(0.02,0)) +
                               labs(x="Month",y="Temperature (°F)",color="Year") + theme_dark())
   output$data &lt;- renderTable(
-    if(is.null(input$years)) paste("To plot data, please select a year")
-    else df.sub() %&gt;% mutate(month=as.integer(month),label=month.abb[month],Year=as.integer(year)) %&gt;%
+    if(is.null(input$years)) monthly.sum.W %&gt;% rename('Annual Mean'=Annual_mean, 'Annual Diff'=Annual_diff)
+    else df.sub() %&gt;%
+      mutate(month=as.integer(month),label=month.abb[month],Year=as.integer(year)) %&gt;%
       pivot_wider(id_cols=Year,names_from=label,values_from=avg) %&gt;%
       mutate(Annual_mean=rowMeans(.[,2:13], na.rm=TRUE)) %&gt;%
       mutate(Annual_diff=Annual_mean-mean(df$dmt, na.rm=TRUE)) %&gt;%
       mutate(Year=as.character(Year)) %&gt;%
       bind_rows(monthly.sum.W) %&gt;%
       rename('Annual Mean'=Annual_mean, 'Annual Diff'=Annual_diff))
-  map &lt;- tibble(lat=40.65, lng=-75.442, zoom=13)
   output$map &lt;- renderLeaflet(
-    leaflet() %&gt;% setView(lat=map$lat, lng=map$lng, zoom=map$zoom) %&gt;%
+    leaflet() %&gt;%
+      setView(lat=map$lat, lng=map$lng, zoom=map$zoom) %&gt;%
       addTiles("https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png") %&gt;%
       addCircleMarkers(lng=map$lng, lat=map$lat,
         popup='Lehigh Valley International Airport&lt;br&gt;NOAA Weather Station', stroke=FALSE, fillOpacity=0.5))}
@@ -1212,7 +1265,7 @@ class: center, middle, inverse
 * Two methods for deployment:
   - [Run locally](https://shiny.rstudio.com/articles/deployment-local.html)
  
-     * Gist, GitHub repository, .zip, R package
+     * Gist, GitHub repository, .zip,&lt;br&gt;R package
      
      * Gist example:
     
@@ -1231,7 +1284,7 @@ class: center, middle, inverse
 * Two methods for deployment:
   - [Run locally](https://shiny.rstudio.com/articles/deployment-local.html)
  
-     * Gist, GitHub repository, .zip, R package
+     * Gist, GitHub repository, .zip,&lt;br&gt;R package
      
      * Gist example:
     
@@ -1255,9 +1308,7 @@ class: center, middle, inverse
 &lt;br/&gt;&lt;br/&gt;
 
 ---
-class: inverse
-
-#### Review - Shiny App Resources:
+#### Topic 7: Resources
 
 * Shiny Apps
 
@@ -1280,7 +1331,7 @@ class: center, middle, inverse, title-slide
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
-"highlightStyle": "github",
+"highlightStyle": "tomorrow-night-bright",
 "highlightLines": true,
 "countIncrementalSlides": false,
 "slideNumberFormat": "%current%"
